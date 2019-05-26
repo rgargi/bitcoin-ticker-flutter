@@ -2,6 +2,7 @@ import 'package:bitcoin_ticker/coin_data.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'dart:io' show Platform; //only show Platform class from the library
 
 class PriceScreen extends StatefulWidget {
   @override
@@ -11,19 +12,7 @@ class PriceScreen extends StatefulWidget {
 class _PriceScreenState extends State<PriceScreen> {
   String selectedCurrency = 'USD';
 
-  DropdownButton<String> getDropdownButton() {
-    return DropdownButton<String>(
-      value: selectedCurrency,
-      items: getDropdownItems(currenciesList),
-      onChanged: (value) {
-        setState(() {
-          selectedCurrency = value;
-        });
-      },
-    );
-  }
-
-  List<DropdownMenuItem<String>> getDropdownItems(List<String> list) {
+  DropdownButton<String> androidDropdown(List<String> list) {
     List<DropdownMenuItem<String>> dropDownMenuItems = [];
     for (String i in list) {
       var newItem = DropdownMenuItem(
@@ -32,7 +21,30 @@ class _PriceScreenState extends State<PriceScreen> {
       );
       dropDownMenuItems.add(newItem);
     }
-    return dropDownMenuItems;
+    return DropdownButton<String>(
+      value: selectedCurrency,
+      items: dropDownMenuItems,
+      onChanged: (value) {
+        setState(() {
+          selectedCurrency = value;
+        });
+      },
+    );
+  }
+
+  Widget iOSPicker(List<String> list) {
+    List<Text> pickerItems = [];
+    for (String i in list) {
+      pickerItems.add(Text(i));
+    }
+    return CupertinoPicker(
+      backgroundColor: Colors.lightBlue,
+      children: pickerItems,
+      itemExtent: 32.0,
+      useMagnifier: true,
+      magnification: 1.3,
+      onSelectedItemChanged: (selectedIndex) {},
+    );
   }
 
   List<Text> getCupertinoPickerItems(List<String> list) {
@@ -79,14 +91,9 @@ class _PriceScreenState extends State<PriceScreen> {
             alignment: Alignment.center,
             padding: EdgeInsets.only(bottom: 30.0),
             color: Colors.lightBlue,
-            child: CupertinoPicker(
-              backgroundColor: Colors.lightBlue,
-              children: getCupertinoPickerItems(currenciesList),
-              itemExtent: 32.0,
-              useMagnifier: true,
-              magnification: 1.3,
-              onSelectedItemChanged: (selectedIndex) {},
-            ),
+            child: Platform.isIOS
+                ? iOSPicker(currenciesList)
+                : androidDropdown(currenciesList),
           ),
         ],
       ),
