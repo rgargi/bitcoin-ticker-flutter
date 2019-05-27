@@ -11,6 +11,25 @@ class PriceScreen extends StatefulWidget {
 
 class _PriceScreenState extends State<PriceScreen> {
   String selectedCurrency = 'USD';
+  String cryptoValue = '?';
+
+  void getData(String currency) async {
+    CoinData coinData = CoinData();
+    try {
+      double data = await coinData.getCoinData(currency);
+      setState(() {
+        cryptoValue = data.toStringAsFixed(0);
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getData('BTCUSD');
+  }
 
   DropdownButton<String> androidDropdown(List<String> list) {
     List<DropdownMenuItem<String>> dropDownMenuItems = [];
@@ -27,6 +46,7 @@ class _PriceScreenState extends State<PriceScreen> {
       onChanged: (value) {
         setState(() {
           selectedCurrency = value;
+          getData('BTC' + value);
         });
       },
     );
@@ -43,7 +63,10 @@ class _PriceScreenState extends State<PriceScreen> {
       itemExtent: 32.0,
       useMagnifier: true,
       magnification: 1.3,
-      onSelectedItemChanged: (selectedIndex) {},
+      onSelectedItemChanged: (selectedIndex) {
+        selectedCurrency = pickerItems[selectedIndex].data;
+        getData('BTC' + selectedCurrency);
+      },
     );
   }
 
@@ -76,7 +99,7 @@ class _PriceScreenState extends State<PriceScreen> {
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
                 child: Text(
-                  '1 BTC = ? USD',
+                  '1 BTC = $cryptoValue $selectedCurrency',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20.0,
@@ -91,7 +114,7 @@ class _PriceScreenState extends State<PriceScreen> {
             alignment: Alignment.center,
             padding: EdgeInsets.only(bottom: 30.0),
             color: Colors.lightBlue,
-            child: Platform.isIOS
+            child: Platform.isAndroid
                 ? iOSPicker(currenciesList)
                 : androidDropdown(currenciesList),
           ),
