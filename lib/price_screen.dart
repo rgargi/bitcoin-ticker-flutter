@@ -12,7 +12,8 @@ class PriceScreen extends StatefulWidget {
 
 class _PriceScreenState extends State<PriceScreen> {
   String selectedCurrency = 'USD';
-  Map<String, String> coinValues = {};
+  // Map<String, String> coinValues = {};
+  Map coinValues = {};
   bool isWaiting = true;
 
 //for getting price from coin_data.dart (only passing the fiatcurrency name)
@@ -49,6 +50,7 @@ class _PriceScreenState extends State<PriceScreen> {
     return DropdownButton<String>(
       value: selectedCurrency,
       items: dropDownMenuItems,
+      style: TextStyle(fontSize: 20.0),
       onChanged: (value) {
         setState(() {
           selectedCurrency = value;
@@ -86,7 +88,8 @@ class _PriceScreenState extends State<PriceScreen> {
       currencyCards.add(CurrencyCard(
         crypto: crypto,
         selectedCurrency: selectedCurrency,
-        cryptoValue: isWaiting ? '?' : coinValues[crypto],
+        cryptoValue: isWaiting ? '?' : coinValues[crypto][0]['lastPrice'],
+        changes: coinValues[crypto][0]['changes'],
       ));
     }
     return Column(
@@ -98,7 +101,8 @@ class _PriceScreenState extends State<PriceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('🤑 Coin Ticker'),
+        title: Text('💸 Coin Ticker'),
+        centerTitle: true,
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -109,7 +113,7 @@ class _PriceScreenState extends State<PriceScreen> {
             height: 150.0,
             alignment: Alignment.center,
             padding: EdgeInsets.only(bottom: 30.0),
-            color: Colors.lightBlue,
+            color: Color(0xFF997eeb),
             child: Platform.isIOS
                 ? iOSPicker(currenciesList)
                 : androidDropdown(currenciesList),
