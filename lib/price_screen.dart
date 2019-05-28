@@ -15,6 +15,7 @@ class _PriceScreenState extends State<PriceScreen> {
   Map<String, String> coinValues = {};
   bool isWaiting = true;
 
+//for getting price from coin_data.dart (only passing the fiatcurrency name)
   void getData(String currency) async {
     isWaiting = true;
     CoinData coinData = CoinData();
@@ -35,6 +36,7 @@ class _PriceScreenState extends State<PriceScreen> {
     getData(selectedCurrency);
   }
 
+//populating dropdown menu from a list
   DropdownButton<String> androidDropdown(List<String> list) {
     List<DropdownMenuItem<String>> dropDownMenuItems = [];
     for (String i in list) {
@@ -56,6 +58,7 @@ class _PriceScreenState extends State<PriceScreen> {
     );
   }
 
+  //populating Picker from a list
   Widget iOSPicker(List<String> list) {
     List<Text> pickerItems = [];
     for (String i in list) {
@@ -76,6 +79,7 @@ class _PriceScreenState extends State<PriceScreen> {
     );
   }
 
+//function which returns a column using a custom class CurrencyCard
   Column makeCards() {
     List<Widget> currencyCards = [];
     for (String crypto in cryptoList) {

@@ -34,6 +34,7 @@ const List<String> cryptoList = [
 
 const baseURL = 'https://apiv2.bitcoinaverage.com/indices/global/ticker/';
 
+//using a for loop to get price for all currencies in a list - fiat currency is passed from price_screen as selected by the user
 class CoinData {
   Map<String, String> cryptoPrices = {};
   Future getCoinData(String currency) async {
