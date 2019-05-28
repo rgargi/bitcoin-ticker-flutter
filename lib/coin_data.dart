@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -34,14 +35,17 @@ const List<String> cryptoList = [
 const baseURL = 'https://apiv2.bitcoinaverage.com/indices/global/ticker/';
 
 class CoinData {
+  Map<String, String> cryptoPrices = {};
   Future getCoinData(String currency) async {
-    http.Response response = await http.get(baseURL + currency);
-    if (response.statusCode == 200) {
-      String data = response.body;
-      return jsonDecode(data)['last'];
-    } else {
-      print('Request failed with status ${response.statusCode}');
-      throw 'Problem with the get request';
+    for (String crypto in cryptoList) {
+      http.Response response = await http.get(baseURL + crypto + currency);
+      if (response.statusCode == 200) {
+        double lastPrice = jsonDecode(response.body)['last'];
+        cryptoPrices[crypto] = lastPrice.toStringAsFixed(0);
+      } else {
+        throw 'Request failed with status ${response.statusCode}';
+      }
     }
+    return cryptoPrices;
   }
 }
